@@ -1,0 +1,54 @@
+
+services:
+  # Backend (Laravel + PHP)
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis  # Depende de Redis
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=chat_app
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      - REDIS_HOST=redis  # Conexión a Redis
+
+  # Base de datos MySQL
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=chat_app
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Redis (Nuevo servicio)
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data  # Persistencia de datos
+
+  # Frontend (Vue.js)
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev"
+    #command: tail -f /dev/null  # Mantener el contenedor en ejecución
+
+volumes:
+  mysql_data:
+  redis_data:  # Volumen para Redis

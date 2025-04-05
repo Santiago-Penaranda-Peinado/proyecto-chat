@@ -1,0 +1,29 @@
+FROM php:8.2-fpm
+
+# 1. Instalar dependencias básicas
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libzip-dev \
+    zip \
+    libzstd-dev \
+    liblz4-dev \
+    pkg-config
+
+# 2. Instalar igbinary desde PECL primero
+RUN pecl install igbinary && docker-php-ext-enable igbinary
+
+# 3. Instalar msgpack (requiere igbinary)
+RUN pecl install msgpack && docker-php-ext-enable msgpack
+
+# 4. Instalar Redis con soporte completo
+RUN pecl install --configureoptions 'enable-redis-igbinary="yes" enable-redis-lzf="yes" enable-redis-zstd="yes" enable-redis-msgpack="yes" enable-redis-lz4="yes"' redis \
+    && docker-php-ext-enable redis
+
+# 5. Instalar extensiones PHP esenciales
+RUN docker-php-ext-install zip pdo pdo_mysql
+
+# 6. Instalar Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+WORKDIR /var/www/html
