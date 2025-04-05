@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 // --- Fin Imports Necesarios ---
-// Imports de Inertia (los dejamos por si acaso)
+// inport dejados por si las moscas 
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse; // Alias para evitar conflicto
 
