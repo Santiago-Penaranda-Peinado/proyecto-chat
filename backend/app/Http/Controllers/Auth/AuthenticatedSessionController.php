@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException; // Para manejar errores de login
 // --- Fin Imports Necesarios ---
+// Imports de Inertia (los dejamos por si acaso, aunque 'create' no lo use tu SPA)
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse; // Alias para evitar conflicto con Illuminate\Http\Response
 
@@ -40,7 +41,9 @@ class AuthenticatedSessionController extends Controller
             $request->authenticate(); 
 
             // Regenera la sesión (importante para seguridad)
-            $request->session()->regenerate(); 
+            // --- DEBUG: Comentamos temporalmente la regeneración ---
+            // $request->session()->regenerate(); // <---- ¡LÍNEA COMENTADA PARA LA PRUEBA!
+            // --- FIN DEBUG ---
 
             // Verifica si la petición pide una respuesta JSON
             if ($request->wantsJson()) {
